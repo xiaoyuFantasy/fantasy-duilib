@@ -6,6 +6,8 @@
 #include <Shlwapi.h>
 #include <vector>
 
+#pragma comment(lib, "Shlwapi.lib")
+
 namespace DuiLib
 {
 	typedef struct _DATASTORAGE

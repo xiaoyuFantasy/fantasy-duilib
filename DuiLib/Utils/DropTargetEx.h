@@ -3,6 +3,8 @@
 #include <Shobjidl.h>
 #include <Shlwapi.h>
 
+#pragma comment(lib, "Shlwapi.lib")
+
 namespace DuiLib
 {
 	class DUILIB_API IDuiDropTarget
