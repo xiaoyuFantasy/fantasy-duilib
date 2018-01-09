@@ -2126,51 +2126,6 @@ HBITMAP CRenderEngine::GenerateBitmap(CPaintManagerUI* pManager, RECT rc, CContr
 	return hBitmap;
 }
 
-HBITMAP CRenderEngine::GenerateBitmap(CPaintManagerUI* pManager, CControlUI* pControl, RECT rc, DWORD dwFilterColor)
-{
-	if (pManager == NULL || pControl == NULL) return NULL;
-    int cx = rc.right - rc.left;
-    int cy = rc.bottom - rc.top;
-
-    HDC hPaintDC = ::CreateCompatibleDC(pManager->GetPaintDC());
-    HBITMAP hPaintBitmap = ::CreateCompatibleBitmap(pManager->GetPaintDC(), rc.right, rc.bottom);
-    ASSERT(hPaintDC);
-    ASSERT(hPaintBitmap);
-    HBITMAP hOldPaintBitmap = (HBITMAP) ::SelectObject(hPaintDC, hPaintBitmap);
-    pControl->Paint(hPaintDC, rc, NULL);
-
-    BITMAPINFO bmi = { 0 };
-    bmi.bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
-    bmi.bmiHeader.biWidth = cx;
-    bmi.bmiHeader.biHeight = cy;
-    bmi.bmiHeader.biPlanes = 1;
-    bmi.bmiHeader.biBitCount = 32;
-    bmi.bmiHeader.biCompression = BI_RGB;
-    bmi.bmiHeader.biSizeImage = cx * cy * sizeof(DWORD);
-    LPDWORD pDest = NULL;
-    HDC hCloneDC = ::CreateCompatibleDC(pManager->GetPaintDC());
-    HBITMAP hBitmap = ::CreateDIBSection(pManager->GetPaintDC(), &bmi, DIB_RGB_COLORS, (LPVOID*) &pDest, NULL, 0);
-    ASSERT(hCloneDC);
-    ASSERT(hBitmap);
-    if( hBitmap != NULL )
-    {
-        HBITMAP hOldBitmap = (HBITMAP) ::SelectObject(hCloneDC, hBitmap);
-        ::BitBlt(hCloneDC, 0, 0, cx, cy, hPaintDC, rc.left, rc.top, SRCCOPY);
-		RECT rcClone = {0, 0, cx, cy};
-		if (dwFilterColor > 0x00FFFFFF) DrawColor(hCloneDC, rcClone, dwFilterColor);
-        ::SelectObject(hCloneDC, hOldBitmap);
-        ::DeleteDC(hCloneDC);  
-        ::GdiFlush();
-    }
-
-    // Cleanup
-    ::SelectObject(hPaintDC, hOldPaintBitmap);
-    ::DeleteObject(hPaintBitmap);
-    ::DeleteDC(hPaintDC);
-
-    return hBitmap;
-}
-
 SIZE CRenderEngine::GetTextSize( HDC hDC, CPaintManagerUI* pManager , LPCTSTR pstrText, int iFont, UINT uStyle )
 {
 	CDuiString sText = pstrText;

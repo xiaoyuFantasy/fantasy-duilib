@@ -23,6 +23,7 @@ namespace DuiLib
 
 		void SetPos(RECT rc, bool bNeedInvalidate = true);
 		void DoPostPaint(HDC hDC, const RECT& rcPaint);
+		//SIZE EstimateSize(SIZE szAvailable);
 
 		RECT GetThumbRect(bool bUseNew = false) const;
 

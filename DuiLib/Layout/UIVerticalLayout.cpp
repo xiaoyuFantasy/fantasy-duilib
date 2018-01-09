@@ -194,6 +194,53 @@ namespace DuiLib
 		}
 	}
 
+	/*SIZE CVerticalLayoutUI::EstimateSize(SIZE szAvailable)
+	{
+		int cxNeeded = 0;
+		int nAdjustables = 0;
+		int cyFixed = 0;
+		int nEstimateNum = 0;
+		SIZE szControlAvailable;
+		int iControlMaxWidth = 0;
+		int iControlMaxHeight = 0;
+		for (size_t i = 0; i < m_items.GetSize(); i++)
+		{
+			CControlUI* pControl = static_cast<CControlUI*>(m_items[i]);
+			if (!pControl->IsVisible()) 
+				continue;
+			if (pControl->IsFloat()) 
+				continue;
+
+			szControlAvailable = szAvailable;
+			RECT rcPadding = pControl->GetPadding();
+			szControlAvailable.cx -= rcPadding.left + rcPadding.right;
+			iControlMaxWidth = pControl->GetFixedWidth();
+			iControlMaxHeight = pControl->GetFixedHeight();
+			if (iControlMaxWidth <= 0) iControlMaxWidth = pControl->GetMaxWidth();
+			if (iControlMaxHeight <= 0) iControlMaxHeight = pControl->GetMaxHeight();
+			if (szControlAvailable.cx > iControlMaxWidth) szControlAvailable.cx = iControlMaxWidth;
+			if (szControlAvailable.cy > iControlMaxHeight) szControlAvailable.cy = iControlMaxHeight;
+			SIZE sz = pControl->EstimateSize(szControlAvailable);
+			if (sz.cy == 0) {
+				nAdjustables++;
+			}
+			else {
+				if (sz.cy < pControl->GetMinHeight()) sz.cy = pControl->GetMinHeight();
+				if (sz.cy > pControl->GetMaxHeight()) sz.cy = pControl->GetMaxHeight();
+			}
+			cyFixed += sz.cy + rcPadding.top + rcPadding.bottom;
+
+			sz.cx = MAX(sz.cx, 0);
+			if (sz.cx < pControl->GetMinWidth()) sz.cx = pControl->GetMinWidth();
+			if (sz.cx > pControl->GetMaxWidth()) sz.cx = pControl->GetMaxWidth();
+			cxNeeded = MAX(cxNeeded, sz.cx + rcPadding.left + rcPadding.right);
+			nEstimateNum++;
+		}
+		cyFixed += (nEstimateNum - 1) * m_iChildPadding;
+		SIZE size = { cxNeeded, cyFixed };
+		return size;
+	}*/
+
 	void CVerticalLayoutUI::SetSepHeight(int iHeight)
 	{
 		m_iSepHeight = iHeight;

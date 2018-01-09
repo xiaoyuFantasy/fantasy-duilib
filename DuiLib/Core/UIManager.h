@@ -300,7 +300,7 @@ public:
 	void ReloadImages();
 
 	//мов╖
-	void SetDropEnable(bool bDrop);
+	bool SetDropEnable(bool bDrop);
 	HRESULT	OnDragEnter(IDataObject *pDataObj, DWORD grfKeyState, POINTL ptl, DWORD *pdwEffect);
 	HRESULT OnDragOver(DWORD grfKeyState, POINTL pt, DWORD *pdwEffect);
 	HRESULT OnDragLeave();

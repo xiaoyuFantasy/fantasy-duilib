@@ -1320,7 +1320,7 @@ bool CPaintManagerUI::MessageHandler(UINT uMsg, WPARAM wParam, LPARAM lParam, LR
 						::DeleteObject(m_hDragBitmap);
 						m_hDragBitmap = NULL;
 					}
-					m_hDragBitmap = CRenderEngine::GenerateBitmap(this, pDragHover, pDragHover->GetPos());
+					m_hDragBitmap = CRenderEngine::GenerateBitmap(this, pDragHover->GetPos(), pDragHover);
 
 					SdkDropSource* drop_src = new SdkDropSource;
 					if (drop_src == NULL)
@@ -1355,7 +1355,7 @@ bool CPaintManagerUI::MessageHandler(UINT uMsg, WPARAM wParam, LPARAM lParam, LR
 
 					DWORD dwEffect;
 					HRESULT hr = ::DoDragDrop(data_object, drop_src, DROPEFFECT_COPY | DROPEFFECT_MOVE, &dwEffect);
-					
+						
 					DeleteObject(m_hDragBitmap);
 					m_hDragBitmap = NULL;
 					drop_src->Release();
@@ -3041,17 +3041,20 @@ void CPaintManagerUI::ReloadImages()
     if( m_pRoot ) m_pRoot->Invalidate();
 }
 
-void CPaintManagerUI::SetDropEnable(bool bDrop)
+bool CPaintManagerUI::SetDropEnable(bool bDrop)
 {
-	m_bDropEnable = bDrop;
-	if (m_bDropEnable)
+	HRESULT hRet = S_OK;
+	if (bDrop)
 	{
-		m_pDropTarget->DragDropRegister(GetPaintWindow(), this);
+		hRet = m_pDropTarget->DragDropRegister(m_hWndPaint, this);
+		m_bDropEnable = true;
 	}
 	else
 	{
-		m_pDropTarget->DragDropRevoke(GetPaintWindow());
+		hRet = m_pDropTarget->DragDropRevoke(m_hWndPaint);
+		m_bDropEnable = false;
 	}
+	return SUCCEEDED(hRet);
 }
 
 HRESULT CPaintManagerUI::OnDragEnter(IDataObject * pDataObj, DWORD grfKeyState, POINTL ptl, DWORD * pdwEffect)
