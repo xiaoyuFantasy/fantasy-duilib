@@ -478,17 +478,24 @@ private:
 	IDataObject*   m_pCurDataObject;
 
     //
-    CDuiPtrArray m_aNotifiers;
-    CDuiPtrArray m_aTimers;
-    CDuiPtrArray m_aPreMessageFilters;
-    CDuiPtrArray m_aMessageFilters;
-    CDuiPtrArray m_aPostPaintControls;
-    CDuiPtrArray m_aDelayedCleanup;
-    CDuiPtrArray m_aAsyncNotify;
-    CDuiPtrArray m_aFoundControls;
-    CDuiPtrArray m_aNeedMouseLeaveNeeded;
-    CDuiStringPtrMap m_mNameHash;
-	CDuiStringPtrMap m_mWindowAttrHash;
+	std::vector<INotifyUI*>	m_vectNofiers;
+    //CDuiPtrArray m_aNotifiers;
+    //CDuiPtrArray m_aTimers;
+	std::vector<IMessageFilterUI*>	m_vectPreMessageFilters;
+    //CDuiPtrArray m_aPreMessageFilters;
+	std::vector<IMessageFilterUI*>	m_vectMessageFilters;
+    //CDuiPtrArray m_aMessageFilters;
+    //CDuiPtrArray m_aPostPaintControls;
+	std::vector<CControlUI*>  m_vectDelayedCleanup;
+    //CDuiPtrArray m_aDelayedCleanup;
+    //CDuiPtrArray m_aAsyncNotify;
+	std::vector<CControlUI*> m_vectFoundControls;
+    //CDuiPtrArray m_aFoundControls;
+    //CDuiPtrArray m_aNeedMouseLeaveNeeded;
+	std::map<tstring, CControlUI*> m_mNameHash;
+    //CDuiStringPtrMap m_mNameHash;
+	std::map<tstring, tstring> m_mWindowAttrHash;
+	//CDuiStringPtrMap m_mWindowAttrHash;
     CDuiStringPtrMap m_mOptionGroup;
 
     //

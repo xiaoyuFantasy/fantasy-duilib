@@ -72,6 +72,13 @@
 #include <queue>
 #include <functional>
 
+#ifdef UNICODE
+typedef std::wstring tstring;
+#else
+typedef std::string	 tstring;
+#endif // UNICODE
+
+
 #include "Utils/Utils.h"
 #include "Utils/UIShadow.h"
 #include "Utils/UIDelegate.h"

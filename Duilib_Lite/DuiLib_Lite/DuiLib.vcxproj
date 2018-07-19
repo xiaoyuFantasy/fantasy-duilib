@@ -83,6 +83,7 @@
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <AssemblerOutput>All</AssemblerOutput>
       <UseUnicodeForAssemblerListing>true</UseUnicodeForAssemblerListing>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)Control\;$(ProjectDir)Core\;$(ProjectDir)Layout\;$(ProjectDir)Utils\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
