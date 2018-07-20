@@ -65,8 +65,8 @@ tagTDrawInfo::tagTDrawInfo(LPCTSTR lpsz)
 
 void tagTDrawInfo::Clear()
 {
-	sDrawString.Empty();
-    sImageName.Empty();
+	sDrawString.clear();
+    sImageName.clear();
 	::ZeroMemory(&bLoaded, sizeof(tagTDrawInfo) - offsetof(tagTDrawInfo, bLoaded));
 	uFade = 255;
 }
@@ -78,8 +78,8 @@ PFUNCUPDATELAYEREDWINDOW g_fUpdateLayeredWindow = NULL;
 HPEN m_hUpdateRectPen = NULL;
 
 HINSTANCE CPaintManagerUI::m_hResourceInstance = NULL;
-CDuiString CPaintManagerUI::m_pStrResourcePath;
-CDuiString CPaintManagerUI::m_pStrResourceZip;
+tstring CPaintManagerUI::m_strResourcePath;
+tstring CPaintManagerUI::m_strResourceZip;
 HANDLE CPaintManagerUI::m_hResourceZip = NULL;
 bool CPaintManagerUI::m_bCachedResourceZip = true;
 TResInfo CPaintManagerUI::m_SharedResInfo;
@@ -88,8 +88,8 @@ bool CPaintManagerUI::m_bUseHSL = false;
 short CPaintManagerUI::m_H = 180;
 short CPaintManagerUI::m_S = 100;
 short CPaintManagerUI::m_L = 100;
-CDuiPtrArray CPaintManagerUI::m_aPreMessages;
-CDuiPtrArray CPaintManagerUI::m_aPlugins;
+//CDuiPtrArray CPaintManagerUI::m_aPreMessages;
+std::vector<tstring> CPaintManagerUI::m_vPlugins;
 
 CPaintManagerUI::CPaintManagerUI() :
 m_hWndPaint(NULL),
@@ -186,9 +186,8 @@ CPaintManagerUI::~CPaintManagerUI()
 	}
 
     // Delete the control-tree structures
-    for( int i = 0; i < m_aDelayedCleanup.GetSize(); i++ ) static_cast<CControlUI*>(m_aDelayedCleanup[i])->Delete();
-    for( int i = 0; i < m_aAsyncNotify.GetSize(); i++ ) delete static_cast<TNotifyUI*>(m_aAsyncNotify[i]);
-    m_mNameHash.Resize(0);
+    for( int i = 0; i < m_vDelayedCleanup.size(); i++ ) static_cast<CControlUI*>(m_vDelayedCleanup[i])->Delete();
+    m_mNameHash.clear();
     if( m_pRoot != NULL ) m_pRoot->Delete();
 
     ::DeleteObject(m_ResInfo.m_DefaultFontInfo.hFont);
@@ -211,14 +210,13 @@ CPaintManagerUI::~CPaintManagerUI()
     if( m_hbmpOffscreen != NULL ) ::DeleteObject(m_hbmpOffscreen);
     if( m_hbmpBackground != NULL ) ::DeleteObject(m_hbmpBackground);
     if( m_hDcPaint != NULL ) ::ReleaseDC(m_hWndPaint, m_hDcPaint);
-    m_aPreMessages.Remove(m_aPreMessages.Find(this));
 }
 
 void CPaintManagerUI::Init(HWND hWnd, LPCTSTR pstrName)
 {
 	ASSERT(::IsWindow(hWnd));
 
-	m_mNameHash.Resize();
+	m_mNameHash.clear();
 	RemoveAllFonts();
 	RemoveAllImages();
 	RemoveAllDefaultAttributeList();

@@ -70,7 +70,7 @@ namespace DuiLib_Lite
     /////////////////////////////////////////////////////////////////////////////////////
     //
 
-    class DUILIB_API CDuiString
+    /*class DUILIB_API CDuiString
     {
     public:
         enum { MAX_LOCAL_STRING_LEN = 63 };
@@ -138,12 +138,12 @@ namespace DuiLib_Lite
     protected:
         LPTSTR m_pstr;
         TCHAR m_szBuffer[MAX_LOCAL_STRING_LEN + 1];
-    };
+    };*/
 
 	/////////////////////////////////////////////////////////////////////////////////////
 	//
 
-	class DUILIB_API CDuiPtrArray
+	/*class DUILIB_API CDuiPtrArray
 	{
 	public:
 		CDuiPtrArray(int iPreallocSize = 0);
@@ -168,7 +168,7 @@ namespace DuiLib_Lite
 		LPVOID* m_ppVoid;
 		int m_nCount;
 		int m_nAllocated;
-	};
+	};*/
 
 
 	/////////////////////////////////////////////////////////////////////////////////////
@@ -200,7 +200,7 @@ namespace DuiLib_Lite
 	/////////////////////////////////////////////////////////////////////////////////////
 	//
 
-    struct TITEM;
+    /*struct TITEM;
 	class DUILIB_API CDuiStringPtrMap
 	{
 	public:
@@ -221,7 +221,7 @@ namespace DuiLib_Lite
 		TITEM** m_aT;
 		int m_nBuckets;
 		int m_nCount;
-	};
+	};*/
 
 	/////////////////////////////////////////////////////////////////////////////////////
 	//
