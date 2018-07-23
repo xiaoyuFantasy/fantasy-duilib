@@ -330,13 +330,13 @@ public:
 	static LPCTSTR GetMultiLanguageString(int id);
 	static bool RemoveMultiLanguageString(int id);
 	static void RemoveAllMultiLanguageString();
-	static void ProcessMultiLanguageTokens(CDuiString& pStrMultiLanguage);
+	static void ProcessMultiLanguageTokens(tstring& pStrMultiLanguage);
 	static HINSTANCE GetInstance();
-	static CDuiString GetInstancePath();
-	static CDuiString GetCurrentPath();
+	static tstring GetInstancePath();
+	static tstring GetCurrentPath();
 	static HINSTANCE GetResourceDll();
-	static const CDuiString& GetResourcePath();
-	static const CDuiString& GetResourceZip();
+	static const tstring& GetResourcePath();
+	static const tstring& GetResourceZip();
 	static bool IsCachedResourceZip();
 	static HANDLE GetResourceZipHandle();
 	static void SetInstance(HINSTANCE hInst);
@@ -365,6 +365,7 @@ private:
 
 private:
 	tstring m_sName;
+	HWND m_hWndPaint;
     HDC m_hDcPaint;
     HDC m_hDcOffscreen;
     HDC m_hDcBackground;
@@ -435,13 +436,14 @@ private:
 	std::vector<CControlUI*> m_vFoundControls;
 	std::map<tstring, CControlUI*> m_mNameHash;
 	std::map<tstring, tstring> m_mWindowAttrHash;
-	std::map <tstring, std::vector<CControlUI*>> m_mOptionGroup;
+	std::map<tstring, std::vector<CControlUI*>> m_mOptionGroup;
 
     //
 	bool m_bForceUseSharedRes;
 	TResInfo m_ResInfo;
 
     //
+	static std::vector<CPaintManagerUI*> m_aPreMessages;
 	static HINSTANCE m_hResourceInstance;
 	static tstring m_strResourcePath;
 	static tstring m_strResourceZip;
