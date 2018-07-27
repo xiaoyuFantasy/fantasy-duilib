@@ -78,69 +78,17 @@ typedef enum EVENTTYPE_UI
 
 /////////////////////////////////////////////////////////////////////////////////////
 //
-
-typedef struct DUILIB_API tagTFontInfo
-{
-    HFONT hFont;
-    tstring sFontName;
-    int iSize;
-    bool bBold;
-    bool bUnderline;
-    bool bItalic;
-    TEXTMETRIC tm;
-} TFontInfo;
-
-typedef struct DUILIB_API tagTImageInfo
-{
-    HBITMAP hBitmap;
-    LPBYTE pBits;
-	LPBYTE pSrcBits;
-    int nX;
-    int nY;
-    bool bAlpha;
-    bool bUseHSL;
-    tstring sResType;
-    DWORD dwMask;
-} TImageInfo;
-
-typedef struct DUILIB_API tagTDrawInfo
-{
-	tagTDrawInfo();
-	tagTDrawInfo(LPCTSTR lpsz);
-	void Clear();
-	tstring sDrawString;
-	tstring sImageName;
-	bool bLoaded;
-	const TImageInfo* pImageInfo;
-	RECT rcDestOffset;
-	RECT rcBmpPart;
-	RECT rcScale9;
-	BYTE uFade;
-	bool bHole;
-	bool bTiledX;
-	bool bTiledY;
-} TDrawInfo;
-
-typedef struct DUILIB_API tagTPercentInfo
-{
-	double left;
-	double top;
-	double right;
-	double bottom;
-} TPercentInfo;
-
 typedef struct DUILIB_API tagTResInfo
 {
-	DWORD m_dwDefaultDisabledColor;
-	DWORD m_dwDefaultFontColor;
-	DWORD m_dwDefaultLinkFontColor;
-	DWORD m_dwDefaultLinkHoverFontColor;
-	DWORD m_dwDefaultSelectedBkColor;
+	DWORD m_dwDefaultDisabledColor = 0;
+	DWORD m_dwDefaultFontColor = 0;
+	DWORD m_dwDefaultLinkFontColor = 0;
+	DWORD m_dwDefaultLinkHoverFontColor = 0;
+	DWORD m_dwDefaultSelectedBkColor = 0;
 	TFontInfo m_DefaultFontInfo;
-	std::map<tstring, tstring> m_mCustomFonts;
-	std::map<tstring, tstring> m_mImageHash;
-	std::map<tstring, tstring> m_mAttrHash;
-	std::map<tstring, tstring> m_mMultiLanguageHash;
+	std::map<tstring, TFontInfo*>	m_mCustomFonts;
+	std::map<tstring, TImageInfo*>	m_mImageHash;
+	std::map<int, tstring>			m_mMultiLanguageHash;
 } TResInfo;
 
 // Structure for notifications from the system
@@ -197,10 +145,10 @@ public:
 	void ReapObjects(CControlUI* pControl);
 
 	//attribute
-	LPCTSTR GetName() const;
-	POINT GetMousePos() const;
-	SIZE GetClientSize() const;
-	SIZE GetInitSize();
+	tstring GetName() const;
+	CDuiPoint GetMousePos() const;
+	CDuiSize GetClientSize() const;
+	CDuiSize GetInitSize();
 	void SetInitSize(int cx, int cy);
 	CDuiRect GetSizeBox() const;
 	void SetSizeBox(CDuiRect& rcSizeBox);
@@ -216,100 +164,63 @@ public:
 	void SetOpacity(BYTE nOpacity);
 	bool IsLayered();
 	void SetLayered(bool bLayered);
-	CDuiString GetWindowAttribute(LPCTSTR pstrName);
-	void SetWindowAttribute(LPCTSTR pstrName, LPCTSTR pstrValue);
-	CDuiString GetWindowAttributeList(bool bIgnoreDefault = true);
-	void SetWindowAttributeList(LPCTSTR pstrList);
-	bool RemoveWindowAttribute(LPCTSTR pstrName);
+	bool IsNoActivate();
+	void SetNoActivate(bool bNoActivate);
+	bool GetWindowAttribute(const tstring& strName, tstring& strValue);
+	void SetWindowAttribute(const tstring& strName, const tstring& strValue);
 	
 	//custom attribute
-	void AddWindowCustomAttribute(LPCTSTR pstrName, LPCTSTR pstrAttr);
-	LPCTSTR GetWindowCustomAttribute(LPCTSTR pstrName) const;
-	bool RemoveWindowCustomAttribute(LPCTSTR pstrName);
+	void AddWindowCustomAttribute(const tstring& strName, const tstring& strAttr);
+	tstring GetWindowCustomAttribute(const tstring& strName) const;
+	bool RemoveWindowCustomAttribute(const tstring& strName);
 	void RemoveAllWindowCustomAttribute();
-
-	//shared attribute
-	//color
-	DWORD GetDefaultDisabledColor() const;
-	void SetDefaultDisabledColor(DWORD dwColor, bool bShared = false);
-	DWORD GetDefaultFontColor() const;
-	void SetDefaultFontColor(DWORD dwColor, bool bShared = false);
-	DWORD GetDefaultLinkFontColor() const;
-	void SetDefaultLinkFontColor(DWORD dwColor, bool bShared = false);
-	DWORD GetDefaultLinkHoverFontColor() const;
-	void SetDefaultLinkHoverFontColor(DWORD dwColor, bool bShared = false);
-	DWORD GetDefaultSelectedBkColor() const;
-	void SetDefaultSelectedBkColor(DWORD dwColor, bool bShared = false);
-	TFontInfo* GetDefaultFontInfo();
-	//font
-	void SetDefaultFont(LPCTSTR pStrFontName, int nSize, bool bBold, bool bUnderline, bool bItalic, bool bShared = false);
-	DWORD GetCustomFontCount(bool bShared = false) const;
-	HFONT AddFont(int id, LPCTSTR pStrFontName, int nSize, bool bBold, bool bUnderline, bool bItalic, bool bShared = false);
-	HFONT GetFont(int id);
-	void RemoveFont(HFONT hFont, bool bShared = false);
-	void RemoveFont(int id, bool bShared = false);
-	void RemoveAllFonts(bool bShared = false);
-	TFontInfo* GetFontInfo(int id);
-	TFontInfo* GetFontInfo(HFONT hFont);
-	//image
-	const TImageInfo* GetImage(LPCTSTR bitmap);
-	const TImageInfo* AddImage(LPCTSTR bitmap, HBITMAP hBitmap, int iWidth, int iHeight, bool bAlpha, bool bShared = false);
-	void RemoveImage(LPCTSTR bitmap, bool bShared = false);
-	void RemoveAllImages(bool bShared = false);
-	//default
-	void AddDefaultAttributeList(LPCTSTR pStrControlName, LPCTSTR pStrControlAttrList, bool bShared = false);
-	LPCTSTR GetDefaultAttributeList(LPCTSTR pStrControlName) const;
-	bool RemoveDefaultAttributeList(LPCTSTR pStrControlName, bool bShared = false);
-	void RemoveAllDefaultAttributeList(bool bShared = false);
 
 	//paint
 	HDC GetPaintDC() const;
 	void Invalidate();
-	void Invalidate(const CDuiRect& rcItem);
+	void Invalidate(CDuiRect& rcItem);
 
 	//drop and drag
 	bool SetDropEnable(bool bDrop);
 	HRESULT	OnDragEnter(IDataObject *pDataObj, DWORD grfKeyState, POINTL ptl, DWORD *pdwEffect);
-	HRESULT OnDragOver(DWORD grfKeyState, POINTL pt, DWORD *pdwEffect);
+	HRESULT OnDragOver(DWORD grfKeyState, POINTL ptl, DWORD *pdwEffect);
 	HRESULT OnDragLeave();
-	HRESULT OnDrop(IDataObject *pDataObj, DWORD grfKeyState, POINTL pt, DWORD *pdwEffect);
+	HRESULT OnDrop(IDataObject *pDataObj, DWORD grfKeyState, POINTL ptl, DWORD *pdwEffect);
 
-	//
+	//group
 	bool AddOptionGroup(LPCTSTR pStrGroupName, CControlUI* pControl);
-	std::vector<CControlUI*>& GetOptionGroup(LPCTSTR pStrGroupName);
-	void RemoveOptionGroup(LPCTSTR pStrGroupName, CControlUI* pControl);
+	std::vector<CControlUI*>* GetOptionGroup(LPCTSTR pStrGroupName);
 	void RemoveAllOptionGroups();
+
+	//focus
     CControlUI* GetFocus() const;
     void SetFocus(CControlUI* pControl, bool bFocusWnd=true);
     void SetFocusNeeded(CControlUI* pControl);
+	void KillFocus();
     bool SetNextTabControl(bool bForward = true);
     void SetCapture();
     void ReleaseCapture();
     bool IsCaptured();
-
+	
+	//paint
 	bool IsPainting();
 	void SetPainting(bool bIsPainting);
-
+	
+	//notify
     bool AddNotifier(INotifyUI* pControl);
     bool RemoveNotifier(INotifyUI* pControl);   
     void SendNotify(TNotifyUI& Msg, bool bAsync = false, bool bEnableRepeat = true);
     void SendNotify(CControlUI* pControl, LPCTSTR pstrMessage, WPARAM wParam = 0, LPARAM lParam = 0, bool bAsync = false, bool bEnableRepeat = true);
-
+	
+	//message filter
     bool AddPreMessageFilter(IMessageFilterUI* pFilter);
     bool RemovePreMessageFilter(IMessageFilterUI* pFilter);
     bool AddMessageFilter(IMessageFilterUI* pFilter);
     bool RemoveMessageFilter(IMessageFilterUI* pFilter);
-
-    void AddDelayedCleanup(CControlUI* pControl);
-    void AddMouseLeaveNeeded(CControlUI* pControl);
-    bool RemoveMouseLeaveNeeded(CControlUI* pControl);
-
 	bool AddTranslateAccelerator(ITranslateAccelerator *pTranslateAccelerator);
 	bool RemoveTranslateAccelerator(ITranslateAccelerator *pTranslateAccelerator);
 	
-	//
-	CShadowUI* GetShadow();
-
+	//control
     CControlUI* GetRoot() const;
     CControlUI* FindControl(POINT pt) const;
     CControlUI* FindControl(LPCTSTR pstrName) const;
@@ -317,35 +228,17 @@ public:
     CControlUI* FindSubControlByName(CControlUI* pParent, LPCTSTR pstrName) const;
     CControlUI* FindSubControlByClass(CControlUI* pParent, LPCTSTR pstrClass, int iIndex = 0);
     std::vector<CControlUI*>& FindSubControlsByClass(CControlUI* pParent, LPCTSTR pstrClass);
+	void AddDelayedCleanup(CControlUI* pControl);
 
+	bool TranslateMessage(const LPMSG pMsg);
 	bool TranslateAccelerator(LPMSG pMsg);
     bool MessageHandler(UINT uMsg, WPARAM wParam, LPARAM lParam, LRESULT& lRes);
 	bool PreMessageHandler(UINT uMsg, WPARAM wParam, LPARAM lParam, LRESULT& lRes);
 
 	// static member function
 	static void MessageLoop();
-	static bool TranslateMessage(const LPMSG pMsg);
 	static void Term();
-	static void AddMultiLanguageString(int id, LPCTSTR pStrMultiLanguage);
-	static LPCTSTR GetMultiLanguageString(int id);
-	static bool RemoveMultiLanguageString(int id);
-	static void RemoveAllMultiLanguageString();
-	static void ProcessMultiLanguageTokens(tstring& pStrMultiLanguage);
-	static HINSTANCE GetInstance();
-	static tstring GetInstancePath();
-	static tstring GetCurrentPath();
-	static HINSTANCE GetResourceDll();
-	static const tstring& GetResourcePath();
-	static const tstring& GetResourceZip();
-	static bool IsCachedResourceZip();
-	static HANDLE GetResourceZipHandle();
-	static void SetInstance(HINSTANCE hInst);
-	static void SetCurrentPath(LPCTSTR pStrPath);
-	static void SetResourceDll(HINSTANCE hInst);
-	static void SetResourcePath(LPCTSTR pStrPath);
-	static void SetResourceZip(LPVOID pVoid, unsigned int len);
-	static void SetResourceZip(LPCTSTR pstrZip, bool bCachedResourceZip = false);
-	static void ReloadSkin();
+	
 	static CPaintManagerUI* GetPaintManager(LPCTSTR pstrName);
 	static std::vector<CPaintManagerUI*>& GetPaintManagers();
 	static bool LoadPlugin(LPCTSTR pstrModuleName);
@@ -365,17 +258,17 @@ private:
 
 private:
 	tstring m_sName;
-	HWND m_hWndPaint;
-    HDC m_hDcPaint;
-    HDC m_hDcOffscreen;
-    HDC m_hDcBackground;
-    HBITMAP m_hbmpOffscreen;
-	COLORREF* m_pOffscreenBits;
+	HWND m_hWndPaint = nullptr;
+    HDC m_hDcPaint = nullptr;
+    HDC m_hDcOffscreen = nullptr;
+    HDC m_hDcBackground = nullptr;
+    HBITMAP m_hbmpOffscreen = nullptr;
+	COLORREF* m_pOffscreenBits = nullptr;
     HBITMAP m_hbmpBackground;
-	COLORREF* m_pBackgroundBits;
-	int m_iTooltipWidth;
-    int m_iLastTooltipWidth;
-	HWND m_hwndTooltip;
+	COLORREF* m_pBackgroundBits = nullptr;
+	int m_iTooltipWidth = 0;
+    int m_iLastTooltipWidth = 0;
+	HWND m_hwndTooltip = nullptr;
 	TOOLINFO m_ToolTip;
 	int m_iHoverTime;
     bool m_bNoActivate;
@@ -385,22 +278,22 @@ private:
 	CShadowUI m_shadow;
 	
     //
-    CControlUI* m_pRoot;
-    CControlUI* m_pFocus;
-    CControlUI* m_pEventHover;
-    CControlUI* m_pEventClick;
-    CControlUI* m_pEventKey;
-    CControlUI* m_pLastToolTip;
-	CControlUI* m_pEventDrop;
+    CControlUI* m_pRoot = nullptr;
+    CControlUI* m_pFocus = nullptr;
+    CControlUI* m_pEventHover = nullptr;
+    CControlUI* m_pEventClick = nullptr;
+    CControlUI* m_pEventKey = nullptr;
+    CControlUI* m_pLastToolTip = nullptr;
+	CControlUI* m_pEventDrop = nullptr;
 
     //
-    POINT m_ptLastMousePos;
-    SIZE m_szMinWindow;
-    SIZE m_szMaxWindow;
-    SIZE m_szInitWindowSize;
-    RECT m_rcSizeBox;
-    SIZE m_szRoundCorner;
-    RECT m_rcCaption;
+    CDuiPoint m_ptLastMousePos;
+    CDuiSize m_szMinWindow;
+	CDuiSize m_szMaxWindow;
+	CDuiSize m_szInitWindowSize;
+	CDuiRect m_rcSizeBox;
+	CDuiSize m_szRoundCorner;
+	CDuiRect m_rcCaption;
     UINT m_uTimerID;
     bool m_bFirstLayout;
     bool m_bUpdateNeeded;
@@ -409,23 +302,21 @@ private:
 
 	BYTE m_nOpacity;
 	bool m_bLayered;
-	RECT m_rcLayeredInset;
+	CDuiRect m_rcLayeredInset;
 	bool m_bLayeredChanged;
-	RECT m_rcLayeredUpdate;
+	CDuiRect m_rcLayeredUpdate;
 	TDrawInfo m_diLayered;
 
     bool m_bMouseTracking;
     bool m_bMouseCapture;
 	bool m_bIsPainting;
-	bool m_bUsedVirtualWnd;
-	bool m_bAsyncNotifyPosted;
 
 	//drop and drag
 	bool m_bDragMode;
 	HBITMAP m_hDragBitmap;
 	bool m_bDropEnable;
-	CDropTargetEx* m_pDropTarget;
-	IDataObject*   m_pCurDataObject;
+	CDropTargetEx* m_pDropTarget = nullptr;
+	IDataObject*   m_pCurDataObject = nullptr;
 
     //
 	std::vector<INotifyUI*>	m_vNofiers;
@@ -436,20 +327,11 @@ private:
 	std::vector<CControlUI*> m_vFoundControls;
 	std::map<tstring, CControlUI*> m_mNameHash;
 	std::map<tstring, tstring> m_mWindowAttrHash;
+	std::map<tstring, tstring> m_mWindowCustomAttrHash;
 	std::map<tstring, std::vector<CControlUI*>> m_mOptionGroup;
 
     //
-	bool m_bForceUseSharedRes;
-	TResInfo m_ResInfo;
-
-    //
 	static std::vector<CPaintManagerUI*> m_aPreMessages;
-	static HINSTANCE m_hResourceInstance;
-	static tstring m_strResourcePath;
-	static tstring m_strResourceZip;
-	static HANDLE m_hResourceZip;
-	static TResInfo m_SharedResInfo;
-    static HINSTANCE m_hInstance;
     static std::vector<tstring> m_vPlugins;
 };
 

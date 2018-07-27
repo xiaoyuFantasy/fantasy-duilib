@@ -86,6 +86,7 @@ typedef std::string	 tstring;
 #include "Utils/DropTargetEx.h"
 
 #include "Core/UIDefine.h"
+#include "Core/UIResource.h"
 #include "Core/UIManager.h"
 #include "Core/UIBase.h"
 #include "Core/UIControl.h"
